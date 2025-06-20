@@ -1,12 +1,19 @@
-
 import pandas as pd
 import streamlit as st
+import requests
 
-df = pd.read_csv("covid_data.csv")
-
+# Fetch live data from WHO API
 st.title("Live COVID-19 Dashboard")
-st.markdown("Source: WHO Public API")
+url = "https://api.covid19api.com/summary"
+response = requests.get(url)
+data = response.json()
 
+# Parse data
+countries_data = data['Countries']
+df = pd.DataFrame(countries_data)
+
+# Display
+st.markdown("Source: WHO Public API")
 country = st.selectbox("Select Country", df['Country'].unique())
 filtered = df[df['Country'] == country]
 
